@@ -78,7 +78,7 @@ def move_image(path):
     os.makedirs(folder_path, exist_ok=True)
 
     # Set the destination path where the image will be saved
-    destination_path = os.path.join(folder_path, path)
+    destination_path = os.path.join(folder_path, 'captured_photo.jpg')
 
     shutil.copy(image_file_path, destination_path)
 
