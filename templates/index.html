@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<title>NutriTrack</title>
+{% endblock %}
+
+{% block body %}
+<div class="header">
+    <img src="{{ url_for('static', filename='logo.png') }}" alt="NutriTrack Logo" class="logo">
+    <h1>NutriTrack</h1>
+    <h2><i>Your smart food companion.</i></h2>
+</div>
+<div class="introduction">
+    <p>
+        <b>NutriTrack</b> uses cutting-edge image recognition and label scanning to instantly identify food products and break down their nutritional information. <br>
+        Whether you're tracking calories, monitoring sugar intake, or managing dietary goals, our app helps you make healthier choices with ease. <br>
+        Just scan a label or snap a photo to get real-time insights, personalized nutrition tracking, and stay informed about what's on your plate.
+    <p>
+</div>
+<div class="instructions">
+    <h2>Scan a Label</h2>
+    <p>Use your camera to scan the label of a food product.</p>
+</div>
+<div class="form">
+    <form>
+        <input type="button" value="Take Photo">
+    </form>
+</div>
+{% endblock %}

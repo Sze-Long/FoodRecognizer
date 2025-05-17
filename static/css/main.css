@@ -1,0 +1,23 @@
+body {
+    background-color: #F9F9F9;
+}
+
+h1 {
+    font-family: 'Inter', sans-serif;
+    color: #333333;
+    font-size: 4rem;
+}
+
+h2 {
+    font-family: 'Roboto', sans-serif;
+    color: #333333;
+    font-size: 0.5rem;
+}
+
+p {
+    font-family: 'Roboto', sans-serif;
+}
+
+input {
+    font-family: 'Roboto', sans-serif;
+}
