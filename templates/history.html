@@ -73,7 +73,7 @@
         {% if image_path %}
             <div style="text-align: center; margin-top: 1rem;">
                 <h2 style="margin-bottom: 0.5rem;">Food Image:</h2>
-                <img src="static/uploads/captured_photo.jpg" alt="Uploaded Image" style="max-width: 100%; height: auto; border-radius: 12px; margin-top: 0;">
+                <img src="{{ url_for('static', filename='uploads/captured_photo.jpg') }}" alt="Uploaded Image" style="max-width: 100%; height: auto; border-radius: 12px; margin-top: 0;">
             </div>
         {% endif %}
     </div>
