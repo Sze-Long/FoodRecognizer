@@ -17,13 +17,13 @@
         Just scan a label or snap a photo to get real-time insights, personalized nutrition tracking, and stay informed about what's on your plate.
     <p>
 </div>
-<div class="instructions">
+<div class="webcam">
     <h2>Scan a Label</h2>
     <p>Use your camera to scan the label of a food product.</p>
 </div>
 <div class="form">
-    <form>
-        <input type="button" value="Take Photo">
+    <form action="/upload" method="POST">
+        <button type="submit">Take Photo</button>
     </form>
 </div>
 {% endblock %}
