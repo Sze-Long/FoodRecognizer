@@ -1,4 +1,8 @@
 from flask import Flask, render_template
+import os
+
+env = os.environ
+API_KEY = env.get("API_KEY")
 
 app = Flask(__name__)
 
