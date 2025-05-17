@@ -6,6 +6,7 @@
 {% endblock %}
 
 {% block body %}
+    <a href="{{ url_for('history') }}">View History</a>
     <div class="header">
         <img src="{{ url_for('static', filename='logo.png') }}" alt="NutriTrack Logo" class="logo">
         <h1>NutriTrack</h1>
@@ -33,7 +34,6 @@
             </div>
         {% endif %}
     </div>
-    
 
     <div class="form">
         <form method="POST" enctype="multipart/form-data">
