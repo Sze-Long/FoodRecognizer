@@ -123,6 +123,11 @@ def get_data(date,num):
         "nutrient_grid": 1
     }).skip(num).limit(1)
 
+    doc = next(results, None)  # Get the first (and only) result or None
+
+    if not doc:
+        print("No data found in the database.")
+        return None, []  # Safe fallback
     # Print the results
     for doc in results:
         print("Food Name:", doc["food_name"])
@@ -310,29 +315,16 @@ def index():
     elif request.method == 'GET':
         return render_template('index.html')
 
-@app.route('/history', methods=['GET', 'POST'])
+@app.route('/history/', methods=['GET', 'POST'])
 def history():
 
-    MONGO_URI = os.getenv("MON_KEY")
-    client = MongoClient(MONGO_URI)
-    db = client["foodDB"]
-
     # Get date from user or default to today
-    selected_date = request.form.get('date') if request.method == 'POST' else datetime.now().strftime('%Y-%m-%d')
+    cur_date = request.form.get('date') if request.method == 'POST' else datetime.now().strftime('%Y-%m-%d')
 
-    path, Using = get_data(selected_date,0)
+    path, Using = get_data(cur_date,0)
+    move_image(path)
 
-    collection_names = db.list_collection_names()
-
-    if selected_date not in collection_names:
-        return render_template('history.html', grid=[], image=None, selected_date=selected_date)
-
-    collection = db[selected_date]
-    docs = list(collection.find({}, {'_id': 0, 'food_name': 1, 'image_name': 1, 'nutrient_grid': 1}))
-
-    selected_image = request.form.get('image_path') if 'image_path' in request.form else (docs[0]['image_name'] if docs else None)
-
-    return render_template('history.html', grid=Using, image=path, selected_date=selected_date)
+    return render_template('history.html', image_path=path, selected_date=cur_date, results = Using)
 
 #type in console -> python -m flask run
 #use link in url -> http://127.0.0.1:5000/

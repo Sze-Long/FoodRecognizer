@@ -68,4 +68,30 @@
         {% endfor %}
         </div>
     {% endif %}
+
+    <div class="webcam">
+        {% if image_path %}
+            <div style="text-align: center; margin-top: 1rem;">
+                <h2 style="margin-bottom: 0.5rem;">Food Image:</h2>
+                <img src="static/uploads/captured_photo.jpg" alt="Uploaded Image" style="max-width: 100%; height: auto; border-radius: 12px; margin-top: 0;">
+            </div>
+        {% endif %}
+    </div>
+
+    <div class="results">
+        <h2>Nutrition Results</h2>
+        {% if results %}
+            <ul>
+                {% for nutrient in results %}
+                    <li><strong>{{ nutrient[0] }}</strong>: {{ nutrient[1] }} {{ nutrient[2] }}</li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No results available. Please upload an image.</p>
+        {% endif %}
+    </div>
+
+    <div class="footer">
+        <p>&copy; 2025 NutriTrack. All rights reserved.</p>
+    </div>
 {% endblock %}
