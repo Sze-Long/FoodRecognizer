@@ -1,32 +1,30 @@
 from pymongo import MongoClient
-from datetime import datetime
-import shutil
-from datetime import datetime
+import os
+from dotenv import load_dotenv
 
-# Replace with your MongoDB Atlas connection string
-MONGO_URI = 
-DATABASE_NAME = "foodDB"
-COLLECTION_NAME = "food"
+load_dotenv()
 
 # Connect to MongoDB
+MON_KEY = os.getenv("MON_KEY")
+MONGO_URI = MON_KEY
 client = MongoClient(MONGO_URI)
-db = client[DATABASE_NAME]
-collection = db[COLLECTION_NAME]
+db = client["foodDB"]
+collection = db["2025-05-17"]
 
-food = "Banana"
-current_date = datetime.now().strftime('%Y-%m-%d')
-COLLECTION_NAME = current_date
+# Query: Find all documents with food_name, image_name, and nutrient_grid
+results = collection.find({}, {
+    "_id": 0,  # exclude MongoDB's internal _id field
+    "food_name": 1,
+    "image_name": 1,
+    "nutrient_grid": 1
+}).skip(0).limit(1)
 
-# Food document example
-food_data = {
-    "food_name": food,
-    "image_name": "avocado_toast.jpg",
-    "date_added": datetime.now(),
-    "nutrition": ["Calories", "Protein", "Fat"],
-    "numbers": [250, 6, 20],
-    "units": ["kcal", "g", "g"]
-}
+# Print the results
+for doc in results:
+    print("Food Name:", doc["food_name"])
+    print("Image Name:", doc["image_name"])
+    print("Nutrient Grid:")
+    for row in doc["nutrient_grid"]:
+        print("  ", row)
+    print("-" * 40)
 
-# Insert the document into the database
-result = collection.insert_one(food_data)
-print("Document inserted with ID:", result.inserted_id)

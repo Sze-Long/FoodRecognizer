@@ -80,12 +80,21 @@
     </div>
 
     <div class="webcam">
-        <h2>Scan a Label</h2>
-        <p>Use your camera to scan the label of a food product.</p>
-    </div>
+    <h2>Scan a Label</h2>
+    <p>Use your camera to scan the label of a food product.</p>
+
+    <video id="video" width="100%" autoplay playsinline></video>
+    <canvas id="canvas" style="display: none;"></canvas>
+
+</div>
+
+    {% if image_path %}
+        <h2>Uploaded Image:</h2>
+        <img src="static/uploads/captured_photo.jpg" alt="Uploaded Image" style="max-width: 100%;">
+    {% endif %}
 
     <div class="form">
-        <form action="/upload" method="POST">
+        <form method="POST" enctype="multipart/form-data">
             <button type="submit">Take Photo</button>
         </form>
     </div>
@@ -99,7 +108,7 @@
                 {% endfor %}
             </ul>
         {% else %}
-            <p>No results available. Please scan a label or upload an image.</p>
+            <p>No results available. Please upload an image.</p>
         {% endif %}
     </div>
 
