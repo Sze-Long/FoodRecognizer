@@ -6,7 +6,8 @@
 {% endblock %}
 
 {% block body %}
-    <a href="{{ url_for('history') }}">View History</a>
+    <p>Current date: {{ cur_date }}</p>
+    <a href="{{ url_for('history', date=cur_date, num=0) }}">View History</a>
     <div class="header">
         <img src="{{ url_for('static', filename='logo.png') }}" alt="NutriTrack Logo" class="logo">
         <h1>NutriTrack</h1>

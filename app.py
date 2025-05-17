@@ -310,21 +310,29 @@ def index():
         for each in Using_sorted:
             print(f"{each[0]} and {each[1]} and {each[2]}")
         
-        return render_template('index.html', image_path=image, results=Using_sorted)
+        # Get date from user or default to today
+        now_date = str(datetime.now().strftime('%Y-%m-%d'))
+        return render_template('index.html', cur_date=now_date,image_path=image, results=Using_sorted)
     
     elif request.method == 'GET':
-        return render_template('index.html')
+        now_date = str(datetime.now().strftime('%Y-%m-%d'))
+        return render_template('index.html', cur_date=now_date)
 
-@app.route('/history/', methods=['GET', 'POST'])
-def history():
+@app.route('/history/<date>/<int:num>', methods=['GET', 'POST'])
+def history(date, num):
+    if request.method == "GET":
+        
+        current_date = datetime.now().strftime('%Y-%m-%d')
+        path, Using = get_data(date,num)
+        move_image(path)
 
-    # Get date from user or default to today
-    cur_date = request.form.get('date') if request.method == 'POST' else datetime.now().strftime('%Y-%m-%d')
+        return render_template('history.html', image_path=path, seelected_date=date, num=num, results=Using)
 
-    path, Using = get_data(cur_date,0)
-    move_image(path)
-
-    return render_template('history.html', image_path=path, selected_date=cur_date, results = Using)
+    elif request.method == "POST":
+        pass
+        
 
 #type in console -> python -m flask run
 #use link in url -> http://127.0.0.1:5000/
+
+app.run(debug=True)

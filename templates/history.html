@@ -23,6 +23,8 @@
         <a href="{{ url_for('index') }}" class="nav-button">Home</a>
     </div>
 
+    <a href=""
+
     <div class="header">
         <h1>History</h1>
         <h2><i>Browse your food scans by date</i></h2>
@@ -34,36 +36,15 @@
         </form>
     </div>
 
-    {% if image %}
-        <div class="main-image">
-        <img src="{{ url_for('static', filename=image) }}" alt="Selected Image">
-        </div>
-
-        <div class="nutrition-info">
-        <h3>Nutrition Facts</h3>
-        <ul>
-            {% for entry in grid %}
-            {% if entry.image_name == image %}
-                {% for n in entry.nutrient_grid %}
-                <li><strong>{{ n[0] }}</strong>: {{ n[1] | round(1) }} {{ n[2] }}</li>
-                {% endfor %}
-            {% endif %}
-            {% endfor %}
-        </ul>
-        </div>
-    {% else %}
-        <p style="text-align: center; margin-top: 3rem;">No images found for this date.</p>
-    {% endif %}
-
     {% if grid|length > 1 %}
         <div class="thumbnails">
         {% for entry in grid %}
             <form method="POST">
-            <input type="hidden" name="date" value="{{ selected_date }}">
-            <input type="hidden" name="image_path" value="{{ entry.image_name }}">
-            <button type="submit" style="all: unset;">
-                <img src="{{ url_for('static', filename=entry.image_name) }}" alt="Thumbnail">
-            </button>
+                <input type="hidden" name="date" value="{{ selected_date }}">
+                <input type="hidden" name="image_path" value="{{ entry.image_name }}">
+                <button type="submit" style="all: unset;">
+                    <img src="{{ url_for('static', filename=entry.image_name) }}" alt="Thumbnail">
+                </button>
             </form>
         {% endfor %}
         </div>
