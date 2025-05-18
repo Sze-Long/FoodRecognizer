@@ -217,46 +217,45 @@ def send_email(date):
             for item in Using:
                 try:
                     float_val = float(item[1])
-                    if float_val.is_integer():
-                        item[1] = int(float_val)
-                    else:
-                        item[1] = float_val
+                    item[1] = int(float_val)
                 except ValueError:
                     pass
                 message += f"{item[0]}: {item[1]} {item[2]}\n"
 
             images.append(f'{path}')
 
-    print(f"Current message:\n{message}")
-    # Set the plain text content BEFORE attaching files
-    msg.set_content(message.strip())
+    if message != "":
+        # Set the plain text content BEFORE attaching files
+        msg.set_content(message.strip())
 
-    # Attach all images
-    for image_path in images:
+        # Attach all images
+        for image_path in images:
+            try:
+                with open(image_path, 'rb') as img:
+                    import mimetypes
+                    mime_type, _ = mimetypes.guess_type(image_path)
+                    maintype, subtype = mime_type.split('/')
+                    msg.add_attachment(img.read(),
+                                    maintype=maintype,
+                                    subtype=subtype,
+                                    filename=os.path.basename(image_path))
+            except FileNotFoundError:
+                print(f"Image not found: {image_path}")
+
+        # Gmail SMTP settings
+        smtp_server = 'smtp.gmail.com'
+        smtp_port = 587
+
         try:
-            with open(image_path, 'rb') as img:
-                import mimetypes
-                mime_type, _ = mimetypes.guess_type(image_path)
-                maintype, subtype = mime_type.split('/')
-                msg.add_attachment(img.read(),
-                                   maintype=maintype,
-                                   subtype=subtype,
-                                   filename=os.path.basename(image_path))
-        except FileNotFoundError:
-            print(f"Image not found: {image_path}")
-
-    # Gmail SMTP settings
-    smtp_server = 'smtp.gmail.com'
-    smtp_port = 587
-
-    try:
-        with smtplib.SMTP(smtp_server, smtp_port) as server:
-            server.starttls()
-            server.login(USE_KEY, PAS_KEY)
-            server.send_message(msg)
-            print('Email sent successfully!')
-    except Exception as e:
-        print(f'Error sending email: {e}')
+            with smtplib.SMTP(smtp_server, smtp_port) as server:
+                server.starttls()
+                server.login(USE_KEY, PAS_KEY)
+                server.send_message(msg)
+                print('Email sent successfully!')
+        except Exception as e:
+            print(f'Error sending email: {e}')
+    else:
+        print("no message sent")
 
 
 def localize_objects(image_path, api_key):
@@ -423,6 +422,13 @@ def history(date, num):
 def send_email_route():
     send_email(str(datetime.now().strftime('%Y-%m-%d')))
     return render_template('index.html')
+
+
+
+
+
+
+
 
 
 
