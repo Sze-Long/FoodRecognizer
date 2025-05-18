@@ -267,8 +267,8 @@ def index():
         take_photo()
         
         candidates = localize_objects("static/uploads/captured_photo.jpg", API_KEY)
-        print(candidates)
-        serving_size = 1
+        
+        servings = float(request.form.get("servings")) if request.form.get("servings") else 1
 
         food = get_food(candidates).strip()
         weight = get_weight(food)
@@ -276,8 +276,7 @@ def index():
         
         #image is the image path saved in images/2025-05-17/11-03-14 food.jpg
 
-        if food == "0":
-            print("No food item found.")
+        if not food:
             return render_template('index.html')
 
         print(weight)
@@ -288,13 +287,17 @@ def index():
 
         if 'servingSize' in food_item:
             print(f"Serving Size: {food_item['servingSize']} {food_item['servingSizeUnit']}")
-            data_serving_size = food_item['servingSize']
-            ratio = serving_size * weight / data_serving_size
+            serving_size = food_item['servingSize']
+            ratio = servings * weight / serving_size
         else:
             print("Serving size information not available.")
 
         Nutrients = ["Protein", "Energy", "Total Sugars","Total lipid (fat)","Carbohydrate, by difference","Fiber, total dietary","Calcium, Ca","Iron, Fe","Sodium, Na","Vitamin A, IU","Vitamin C, total ascorbic acid","Cholesterol","Fatty acids, total trans","Fatty acids, total saturated"]
         Using = []
+        row = ["Food", food, ""]
+        Using.append(row)
+        row = ["Serving(s)", servings, ""]
+        Using.append(row)
         # Loop through the nutrients and print their values
         for nutrient in food_item['foodNutrients']:
             if nutrient['nutrientName'] in Nutrients:
@@ -303,10 +306,12 @@ def index():
                     Using.append(row)
 
         custom_order = {
-            "Energy": 0,
-            "Protein": 1,
-            "Total lipid (fat)": 2,
-            "Carbohydrate, by difference": 3
+            "Food": 0,
+            "Serving(s)": 1,
+            "Energy": 2,
+            "Protein": 3,
+            "Total lipid (fat)": 4,
+            "Carbohydrate, by difference": 5
         }
 
         # Assign a default sort key if not found in custom_order

@@ -35,7 +35,7 @@
 
     <div class="date-picker">
         <form method="POST">
-            <input type="date" name="date" value="{{ selected_date }}" href="/history/{{ selected_date }}/{{ num }}" max="{{ cur_date }}" onchange="if (this.value) window.location.href = '/history/' + this.value + '/0'">
+            <input type="date" name="date" value="{{ selected_date }}" max="{{ cur_date }}" onchange="if (this.value) window.location.href = '/history/' + this.value + '/0'">
         </form>
     </div>
 
@@ -56,8 +56,6 @@
                     <li><strong>{{ nutrient[0] }}</strong>: {{ nutrient[1] }} {{ nutrient[2] }}</li>
                 {% endfor %}
             </ul>
-        {% else %}
-            <p>No results available. Please upload an image.</p>
         {% endif %}
     </div>
 
