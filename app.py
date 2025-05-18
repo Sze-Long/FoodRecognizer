@@ -11,6 +11,9 @@ import shutil
 from datetime import datetime
 from pymongo import MongoClient
 from werkzeug.utils import secure_filename
+import smtplib
+from email.message import EmailMessage
+from email.utils import make_msgid
 
 load_dotenv()
 
@@ -18,6 +21,8 @@ GEM_KEY = os.getenv("GEM_KEY")
 USA_KEY = os.getenv("USA_KEY")
 API_KEY = os.getenv("API_KEY")
 MON_KEY = os.getenv("MON_KEY")
+USE_KEY = os.getenv("USE_KEY")
+PAS_KEY = os.getenv("PAS_KEY")
 
 def take_photo():
     # Open the webcam (0 is the default camera)
@@ -123,7 +128,7 @@ def get_data(date,num):
 
     if not doc:
         print("No data found in the database.")
-        return None, []  # Safe fallback
+        return None, None, []  # Safe fallback
     # Print the results
     for doc in results:
         print("Food Name:", doc["food_name"])
@@ -133,7 +138,7 @@ def get_data(date,num):
             print("  ", row)
         print("-" * 40)
 
-    return doc["image_name"], doc["nutrient_grid"]
+    return doc["food_name"],doc["image_name"],doc["nutrient_grid"]
 
 def get_weight(food):
     client = genai.Client(api_key=GEM_KEY)
@@ -183,6 +188,7 @@ def get_details(food):
         results = food_data.get('foods', [])
 
         food_item = results[0]
+        print(food_item)
 
         return food_item
             
@@ -190,6 +196,49 @@ def get_details(food):
         print(f"Error: {response.status_code}")
         print(response.text)
 
+def send_email(date):
+    # Email content
+    message = ""
+    msg = EmailMessage()
+    msg['Subject'] = 'Food Email Diagnosis'
+    msg['From'] = USE_KEY
+    msg['To'] = USE_KEY
+    
+    counter = 0
+    while True:
+        food, path, Using = get_data(date,counter)
+        counter += 1
+        if(food == None):
+            break
+        else:
+            for item in Using:
+                try:
+                    float_val = float(item[1])
+                    if float_val.is_integer():
+                        item[1] = int(float_val)
+                    else:
+                        item[1] = float_val
+                except ValueError:
+                    pass  # Keep it as is if it's not a number
+                message += "\n\n"
+
+    msg.set_content(message)
+            
+    # Gmail SMTP settings
+    smtp_server = 'smtp.gmail.com'
+    smtp_port = 587
+
+    # Send email
+    try:
+        with smtplib.SMTP(smtp_server, smtp_port) as server:
+            server.starttls()  # Secure the connection
+            server.login(USE_KEY, PAS_KEY)  # Use app-specific password
+            server.send_message(msg)
+            print('Email sent successfully!')
+    except Exception as e:
+        print(f'Error sending email: {e}')
+
+    print("Sent")
 
 def localize_objects(image_path, api_key):
     # Read image file
@@ -242,14 +291,14 @@ def localize_objects(image_path, api_key):
         if not objects:
             print("No objects localized.")
             return None
-
-        print("Objects localized:")
-        for obj in objects:
-            name = obj['name']
-            score = obj['score']
-            print(f"- {name} ({score:.2f})")
-            if score > 0.3:
-                candidates.append(name)
+        else:
+            print("Objects localized:")
+            for obj in objects:
+                name = obj['name']
+                score = obj['score']
+                print(f"- {name} ({score:.2f})")
+                if score > 0.3:
+                    candidates.append(name)
     else:
         print(f"API error {response.status_code}:")
         print(response.text)
@@ -332,7 +381,7 @@ def index():
 
 @app.route('/history/<date>/<int:num>', methods=['GET', 'POST'])
 def history(date, num):
-    path, Using = get_data(date,num)
+    food, path, Using = get_data(date,num)
     if request.method == "GET":
         
         current_date = datetime.now().strftime('%Y-%m-%d')
@@ -350,6 +399,16 @@ def history(date, num):
             return render_template('history.html', image_path=path, selected_date=new_date, num=num, results=Using)
         else:
             return render_template('history.html', image_path=path, selected_date=date, num=num, results=Using)
+
+@app.route('/send_email_route', methods=['POST'])
+def send_email_route():
+    send_email(str(datetime.now().strftime('%Y-%m-%d')))
+    return render_template('index.html')
+
+
+
+
+
 
 #type in console -> python -m flask run
 #use link in url -> http://127.0.0.1:5000/

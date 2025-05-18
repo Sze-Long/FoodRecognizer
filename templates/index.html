@@ -11,19 +11,10 @@
         <a href="{{ url_for('index') }}">Home</a>
         <a href="{{ url_for('history', date=cur_date, num=0) }}">History</a>
     </div>
-    <a href="{{ url_for('history', date=cur_date, num=0) }}">View History</a>
+
     <div class="header">
         <img src="{{ url_for('static', filename='logo.png') }}" alt="NutriTrack Logo" class="logo">
-        <h1>NutriTrack</h1>
         <h2><i>Your smart food companion.</i></h2>
-    </div>
-
-    <div class="introduction">
-        <p>
-            <strong>NutriTrack</strong> uses cutting-edge image recognition and label scanning to instantly identify food products and break down their nutritional information.
-            Whether you're tracking calories, monitoring sugar intake, or managing dietary goals, our app helps you make healthier choices with ease.
-            Just scan a label or snap a photo to get real-time insights, personalized nutrition tracking, and stay informed about what's on your plate.
-        </p>
     </div>
 
     <div class="webcam section">
@@ -58,6 +49,20 @@
         {% else %}
             <p>No results available. Please upload an image.</p>
         {% endif %}
+    </div>
+
+    <div class="send-email">
+        <form action="{{ url_for('send_email_route') }}" method="POST">
+            <button type="submit" class="email-button">Send Email</button>
+        </form>
+    </div>
+
+    <div class="introduction">
+        <p>
+            <strong>NutriTrack</strong> uses cutting-edge image recognition and label scanning to instantly identify food products and break down their nutritional information.
+            Whether you're tracking calories, monitoring sugar intake, or managing dietary goals, our app helps you make healthier choices with ease.
+            Just scan a label or snap a photo to get real-time insights, personalized nutrition tracking, and stay informed about what's on your plate.
+        </p>
     </div>
 
     <div class="footer">

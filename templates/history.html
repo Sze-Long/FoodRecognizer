@@ -3,19 +3,6 @@
 {% block head %}
   <title>Image History</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
-  <style>
-    .main-image { text-align: center; margin-top: 2rem; }
-    .main-image img { max-width: 90%; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-    .thumbnails { display: flex; flex-wrap: wrap; justify-content: center; gap: 1rem; margin-top: 2rem; }
-    .thumbnails form { display: inline-block; }
-    .thumbnails img { width: 120px; border-radius: 8px; cursor: pointer; transition: transform 0.2s ease; }
-    .thumbnails img:hover { transform: scale(1.05); }
-    .nutrition-info { max-width: 700px; margin: 2rem auto; }
-    .nutrition-info ul { list-style: none; padding: 0; }
-    .nutrition-info li { background: #f0f0f0; padding: 12px; margin-bottom: 10px; border-radius: 6px; }
-    .date-picker { text-align: center; margin-top: 2rem; }
-    .date-picker input { padding: 0.5rem 1rem; font-size: 1rem; }
-  </style>
 {% endblock %}
 
 {% block body %}
@@ -23,11 +10,6 @@
         <a href="{{ url_for('index') }}">Home</a>
         <a href="{{ url_for('history', date=cur_date, num=0) }}">History</a>
     </div>
-
-    <a href="/history/{{ selected_date }}/{{ num+1 }}">Next</a>
-    {% if num > 0 %}
-    <a href="/history/{{ selected_date }}/{{ num-1 }}">Back</a>
-    {% endif %}
 
     <div class="header">
         <h1>History</h1>
@@ -38,6 +20,13 @@
         <label for="dateSelect"><strong>Select Date:</strong></label><br>
         <input id="dateSelect" type="date" name="date" value="{{ selected_date }}" max="{{ cur_date }}"
                 onchange="if (this.value) window.location.href = '/history/' + this.value + '/0'">
+    </div>
+
+    <div class="nav-buttons"></div>
+        {% if num > 0 %}
+            <a href="/history/{{ selected_date }}/{{ num-1 }}" class="nav-button">← Back</a>
+        {% endif %}
+        <a href="/history/{{ selected_date }}/{{ num+1 }}" class="nav-button">Next →</a>
     </div>
 
     <div class="webcam">
