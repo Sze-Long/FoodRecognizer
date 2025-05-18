@@ -23,7 +23,10 @@
         <a href="{{ url_for('index') }}" class="nav-button">Home</a>
     </div>
 
-    <a href=""
+    <a href="/history/{{ selected_date }}/{{ num+1 }}">Next</a>
+    {% if num > 0 %}
+    <a href="/history/{{ selected_date }}/{{ num-1 }}">Back</a>
+    {% endif %}
 
     <div class="header">
         <h1>History</h1>
@@ -32,23 +35,9 @@
 
     <div class="date-picker">
         <form method="POST">
-        <input type="date" name="date" value="{{ selected_date }}" max="{{ selected_date }}" onchange="this.form.submit()">
+            <input type="date" name="date" value="{{ selected_date }}" href="/history/{{ selected_date }}/{{ num }}" max="{{ cur_date }}" onchange="if (this.value) window.location.href = '/history/' + this.value + '/0'">
         </form>
     </div>
-
-    {% if grid|length > 1 %}
-        <div class="thumbnails">
-        {% for entry in grid %}
-            <form method="POST">
-                <input type="hidden" name="date" value="{{ selected_date }}">
-                <input type="hidden" name="image_path" value="{{ entry.image_name }}">
-                <button type="submit" style="all: unset;">
-                    <img src="{{ url_for('static', filename=entry.image_name) }}" alt="Thumbnail">
-                </button>
-            </form>
-        {% endfor %}
-        </div>
-    {% endif %}
 
     <div class="webcam">
         {% if image_path %}

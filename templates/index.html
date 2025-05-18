@@ -1,3 +1,4 @@
+
 {% extends 'base.html' %}
 
 {% block head %}
@@ -25,8 +26,6 @@
     <div class="webcam">
         <h2>Scan a Label</h2>
         <p style="margin-bottom: 0.5rem;">Use your camera to scan the label of a food product.</p>
-        <!-- <video id="video" width="100%" autoplay playsinline></video>
-        <canvas id="canvas" style="display: none;"></canvas> -->
 
         {% if image_path %}
             <div style="text-align: center; margin-top: 1rem;">
@@ -38,7 +37,7 @@
 
     <div class="form">
         <form method="POST" enctype="multipart/form-data">
-            <input type="number"w
+            <p>Servings: </p><input type="number" placeholder="1">
             <button type="submit">Take Photo</button>
         </form>
     </div>

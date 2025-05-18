@@ -82,10 +82,6 @@ def move_image(path):
 
     shutil.copy(image_file_path, destination_path)
 
-    
-
-
-
 def save_data(food, image, Using):
     current_date = datetime.now().strftime('%Y-%m-%d')
     MON_KEY = os.getenv("MON_KEY")
@@ -153,7 +149,7 @@ def get_food(candidates):
     client = genai.Client(api_key=GEM_KEY)
 
     response = client.models.generate_content(
-        model="gemini-2.0-flash", contents=f"From this list of items, get the first item that is a food. Just give the name only: {candidates}, otherwise say None",
+        model="gemini-2.0-flash", contents=f"From this list of items, get the first item that is a specific food. Just give the name only: {candidates}, otherwise say None",
     )
     print(response.text)
 
@@ -212,7 +208,10 @@ def localize_objects(image_path, api_key):
         "requests": [
             {
                 "image": {"content": encoded_image},
-                "features": [{"type": "OBJECT_LOCALIZATION", "maxResults": 5}]
+                "features": [
+                    {"type": "OBJECT_LOCALIZATION", "maxResults": 5},
+                    {"type": "LABEL_DETECTION", "maxResults": 5}
+                ]
             }
         ]
     }
@@ -220,10 +219,25 @@ def localize_objects(image_path, api_key):
     # Send request
     response = requests.post(url, headers=headers, data=json.dumps(payload))
 
+    print(response)
     candidates = []
     
     # Handle response
     if response.status_code == 200:
+        
+        # Handle label detections
+        labels = response.json()['responses'][0].get('labelAnnotations', [])
+        if not labels:
+            print("No labels detected.")
+        else:
+            print("Labels detected:")
+            for label in labels:
+                description = label['description']
+                score = label['score']
+                print(f"- {description} ({score:.2f})")
+                if score > 0.3:
+                    candidates.append(description)
+        
         objects = response.json()['responses'][0].get('localizedObjectAnnotations', [])
         if not objects:
             print("No objects localized.")
@@ -236,13 +250,6 @@ def localize_objects(image_path, api_key):
             print(f"- {name} ({score:.2f})")
             if score > 0.3:
                 candidates.append(name)
-            # box = obj['boundingPoly']['normalizedVertices']
-            # print(f"- {name} ({score:.2f})")
-            # for i, vertex in enumerate(box):
-            #     x = vertex.get('x', 0)
-            #     y = vertex.get('y', 0)
-            #     print(f"  Vertex {i+1}: x={x:.2f}, y={y:.2f}")
-
     else:
         print(f"API error {response.status_code}:")
         print(response.text)
@@ -320,17 +327,24 @@ def index():
 
 @app.route('/history/<date>/<int:num>', methods=['GET', 'POST'])
 def history(date, num):
+    path, Using = get_data(date,num)
     if request.method == "GET":
         
         current_date = datetime.now().strftime('%Y-%m-%d')
-        path, Using = get_data(date,num)
-        move_image(path)
-
-        return render_template('history.html', image_path=path, seelected_date=date, num=num, results=Using)
-
-    elif request.method == "POST":
-        pass
+        if path != None:
+            move_image(path)
+            fail = False
+        else:
+            fail = True
         
+        return render_template('history.html', image_path=path, selected_date=date, num=num, results=Using,fail=fail)
+    elif request.method == "POST":
+
+        new_date = request.form.get("date")
+        if new_date:
+            return render_template('history.html', image_path=path, selected_date=new_date, num=num, results=Using)
+        else:
+            return render_template('history.html', image_path=path, selected_date=date, num=num, results=Using)
 
 #type in console -> python -m flask run
 #use link in url -> http://127.0.0.1:5000/
