@@ -1,6 +1,6 @@
 import cv2
 from google import genai
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect, url_for
 import os
 import json
 import io
@@ -200,7 +200,7 @@ def get_details(food):
 def send_email(date):
     message = ""
     msg = EmailMessage()
-    msg['Subject'] = 'Food Email Diagnosis'
+    msg['Subject'] = f'Food Email for {date}'
     msg['From'] = USE_KEY
     msg['To'] = USE_KEY
 
@@ -221,6 +221,7 @@ def send_email(date):
                 except ValueError:
                     pass
                 message += f"{item[0]}: {item[1]} {item[2]}\n"
+            message += "\n"
 
             images.append(f'{path}')
 
@@ -369,7 +370,9 @@ def index():
         for nutrient in food_item['foodNutrients']:
             if nutrient['nutrientName'] in Nutrients:
                 if nutrient['value'] != 0:
-                    row = [nutrient['nutrientName'], nutrient['value'] * ratio, nutrient['unitName']]
+                    float_val = float(nutrient['value']) * ratio  # Convert the item[1] to float
+                    new_val = round(float_val, 2)
+                    row = [nutrient['nutrientName'], new_val, nutrient['unitName']]
                     Using.append(row)
 
         custom_order = {
@@ -418,22 +421,10 @@ def history(date, num):
         else:
             return render_template('history.html', image_path=path, selected_date=date, num=num, results=Using)
 
-@app.route('/send_email_route', methods=['POST'])
-def send_email_route():
-    send_email(str(datetime.now().strftime('%Y-%m-%d')))
-    return render_template('index.html')
-
-
-
-
-
-
-
-
-
-
-
-
+@app.route('/history/<date>/<int:num>/send_email_route', methods=['POST', 'GET'])
+def send_email_route(date, num):
+    send_email(date)
+    return redirect(url_for('history', date=date, num=num))
 
 #type in console -> python -m flask run
 #use link in url -> http://127.0.0.1:5000/

@@ -10,7 +10,7 @@ body {
 .container {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 20px;
+    padding: 5px;
 }
 
 .header {
@@ -108,6 +108,36 @@ form input[type="file"] {
     color: #333;
     /* margin-bottom: 0.5rem;
     display: block; */
+}
+
+.send-email {
+    display: flex;
+    justify-content: center; /* Center the button horizontally */
+    margin-top: 2rem; /* Add space above the button */
+}
+
+.email-button {
+    padding: 0.8rem 1.5rem;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    width: auto; /* Set the width to auto to prevent full width */
+    max-width: 200px; /* Maximum width of the button */
+    display: inline-block; /* Make the button behave like an inline block element */
+    text-align: center;
+}
+
+.email-button:hover {
+    background-color: #45a049;
+}
+
+.email-button:focus {
+    outline: none;
+    box-shadow: 0 0 5px rgba(0, 128, 0, 0.5);
 }
 
 button {
