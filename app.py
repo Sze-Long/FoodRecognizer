@@ -14,6 +14,7 @@ from werkzeug.utils import secure_filename
 import smtplib
 from email.message import EmailMessage
 from email.utils import make_msgid
+import mimetypes
 
 load_dotenv()
 
@@ -197,18 +198,20 @@ def get_details(food):
         print(response.text)
 
 def send_email(date):
-    # Email content
     message = ""
     msg = EmailMessage()
     msg['Subject'] = 'Food Email Diagnosis'
     msg['From'] = USE_KEY
     msg['To'] = USE_KEY
-    
+
     counter = 0
+    images = []  # Collect image paths
+
     while True:
-        food, path, Using = get_data(date,counter)
+        food, path, Using = get_data(date, counter)
+        print(f"get_data output: {food}, {path}, {Using}")
         counter += 1
-        if(food == None):
+        if food is None:
             break
         else:
             for item in Using:
@@ -219,26 +222,42 @@ def send_email(date):
                     else:
                         item[1] = float_val
                 except ValueError:
-                    pass  # Keep it as is if it's not a number
-                message += "\n\n"
+                    pass
+                message += f"{item[0]}: {item[1]} {item[2]}\n"
 
-    msg.set_content(message)
-            
+            images.append(f'{path}')
+
+    print(f"Current message:\n{message}")
+    # Set the plain text content BEFORE attaching files
+    msg.set_content(message.strip())
+
+    # Attach all images
+    for image_path in images:
+        try:
+            with open(image_path, 'rb') as img:
+                import mimetypes
+                mime_type, _ = mimetypes.guess_type(image_path)
+                maintype, subtype = mime_type.split('/')
+                msg.add_attachment(img.read(),
+                                   maintype=maintype,
+                                   subtype=subtype,
+                                   filename=os.path.basename(image_path))
+        except FileNotFoundError:
+            print(f"Image not found: {image_path}")
+
     # Gmail SMTP settings
     smtp_server = 'smtp.gmail.com'
     smtp_port = 587
 
-    # Send email
     try:
         with smtplib.SMTP(smtp_server, smtp_port) as server:
-            server.starttls()  # Secure the connection
-            server.login(USE_KEY, PAS_KEY)  # Use app-specific password
+            server.starttls()
+            server.login(USE_KEY, PAS_KEY)
             server.send_message(msg)
             print('Email sent successfully!')
     except Exception as e:
         print(f'Error sending email: {e}')
 
-    print("Sent")
 
 def localize_objects(image_path, api_key):
     # Read image file
