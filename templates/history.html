@@ -19,8 +19,9 @@
 {% endblock %}
 
 {% block body %}
-    <div class="navigation">
-        <a href="{{ url_for('index') }}" class="nav-button">Home</a>
+    <div class="navbar">
+        <a href="{{ url_for('index') }}">Home</a>
+        <a href="{{ url_for('history', date=cur_date, num=0) }}">History</a>
     </div>
 
     <a href="/history/{{ selected_date }}/{{ num+1 }}">Next</a>
@@ -34,9 +35,9 @@
     </div>
 
     <div class="date-picker">
-        <form method="POST">
-            <input type="date" name="date" value="{{ selected_date }}" max="{{ cur_date }}" onchange="if (this.value) window.location.href = '/history/' + this.value + '/0'">
-        </form>
+        <label for="dateSelect"><strong>Select Date:</strong></label><br>
+        <input id="dateSelect" type="date" name="date" value="{{ selected_date }}" max="{{ cur_date }}"
+                onchange="if (this.value) window.location.href = '/history/' + this.value + '/0'">
     </div>
 
     <div class="webcam">

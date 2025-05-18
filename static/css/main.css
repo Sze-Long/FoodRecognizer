@@ -1,6 +1,4 @@
-/* main.css */
 
-/* Global Styles */
 body {
     font-family: Arial, sans-serif;
     margin: 0;
@@ -15,7 +13,6 @@ body {
     padding: 20px;
 }
 
-/* Header Styling */
 .header {
     text-align: center;
     padding: 3rem 1rem;
@@ -44,7 +41,6 @@ body {
     margin-top: 10px;
 }
 
-/* Introduction Section */
 .introduction {
     padding: 2.5rem;
     max-width: 800px;
@@ -61,7 +57,6 @@ body {
     color: #444;
 }
 
-/* Webcam & Image Upload Section */
 .webcam, .form, .results {
     padding: 2rem;
     max-width: 800px;
@@ -93,7 +88,6 @@ body {
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
-/* Form Styling */
 form input[type="file"] {
     padding: 10px;
     margin: 1rem 0;
@@ -103,6 +97,17 @@ form input[type="file"] {
     display: block;
     width: 100%;
     background-color: #fafafa;
+}
+
+.webcam, .form, .results {
+    margin-bottom: 3rem;
+}
+
+.date-picker label {
+    font-size: 1.1rem;
+    color: #333;
+    margin-bottom: 0.5rem;
+    display: block;
 }
 
 button {
@@ -118,6 +123,13 @@ button {
     margin-top: 1rem;
 }
 
+.button-group {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
 button:hover {
     background-color: #45a049;
 }
@@ -127,7 +139,6 @@ button:focus {
     box-shadow: 0 0 5px rgba(0, 128, 0, 0.5);
 }
 
-/* Nutrition Results Styling */
 ul {
     list-style: none;
     padding: 0;
@@ -164,7 +175,29 @@ footer p {
     margin: 0;
 }
 
-/* Responsive Design */
+.navbar {
+    position: sticky;
+    top: 0;
+    background-color: #ffffff;
+    padding: 1rem 2rem;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    z-index: 10;
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+}
+
+.navbar a {
+    color: #4CAF50;
+    font-weight: bold;
+    text-decoration: none;
+    font-size: 1.1rem;
+}
+
+.navbar a:hover {
+    text-decoration: underline;
+}
+
 @media (max-width: 768px) {
     .header h1 {
         font-size: 2.2rem;
@@ -192,3 +225,11 @@ footer p {
     }
 }
 
+.header h1,
+.header h2,
+.introduction p:first-child,
+.webcam h2,
+.form p:first-child,
+.results h2 {
+    margin-top: 0;
+}
